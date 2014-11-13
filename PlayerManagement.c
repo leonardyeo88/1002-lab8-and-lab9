@@ -54,10 +54,9 @@ void addNewPlayer(){
 	}
 	else{
 		printf("Enter your name: ");
-		//scanf("%s", name);	//gets player's name as string
-		fflush(stdin);
-		fgets(name, strlen(name), stdin);
-		//printf("%s", name);
+		//scanf("%s", name);	//gets player's name as string, however any string after \w, \n, \t, etc in the stream, will be removed
+		fflush(stdin);	//flushes out the buffer
+		fgets(name, strlen(name), stdin);	//gets player's name as string, however any string after \w, \n, \t, etc in the stream, will be stored
 		generateId(name, id); //prints unique ID
 
 		/*insert your own code here (2)
@@ -90,12 +89,12 @@ void addNewPlayer(){
 void generateId(char *name, char *id){
 	/*insert your own code here (3)*/
 
-	int temp = strlen(name) - 2;
+	int temp = strlen(name) - 2;	//length of name - 2
 
 	for (int i = 0; i < strlen(name); i++){
-		if (name[i] == ' '){
-			temp = i - 1;
-			break;
+		if (name[i] == ' '){	//checks if index of name has a blank space
+			temp = i - 1;	//temp = index of name - 1
+			break; //break from loop
 		}
 	}
 
