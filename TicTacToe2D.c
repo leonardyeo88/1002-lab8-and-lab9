@@ -205,15 +205,147 @@ int getPossibleWinningPos()
 	return FALSE;
 }
 
+/*
+*	when the function is called, it loops through the cells indicated below:
+*
+*	i=0. 1st iteration:	product_row = 1 * value of (0,0), product_column = 1 * value of (0,0)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|	(0,0) empty?			|							|							|
+*		emp_col_index = 0			
+*		emp_row_index = 0
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*
+*
+*	i=0. 2nd iteration:	product_row = product_row * value of (0,1), product_column = product_column * value of (1,0)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|	(0,1) empty?			|							|
+*									emp_col_index = 1
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|	(1,0) empty? return 4	|							|							|
+*		emp_row_index = 1
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*
+*
+*	i=0. 3rd iteration:	product_row = product_row * value of (0,2), product_column = product_column * value of (2,0)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|		(0,2) empty?		|
+*																	emp_col_index = 2
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*		
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|	(2,0) empty?			|							|							|
+*		emp_row_index = 2
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*	
+*	----------------------------------------------------------------------------------------------------------------------------
+*
+*	i=1. 1st iteration:	product_row = 1 * value of (1,0), product_column = 1 * value of (0,1)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|		(1,2) empty?		|							|
+*										emp_col_index = 0
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|		(0,1) empty?		|							|							|
+*			emp_row_index = 0														
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*										
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+
+*
+*	i=1 2nd iteration:	product_row = product_row * value of (1,1), product_column = product_column * value of (1,1)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*																	
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|		(1,1) empty?		|							|
+*										(1,1) empty?
+*										emp_row_index = 1
+*										emp_col_index = 1
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*		
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*
+*
+*	i=1. 3rd iteration:	product_row = product_row * value of (1,2), product_column = product_column * value of (2,1)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*																	
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|		(1,2) empty?		|
+*																	emp_col_index = 2
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|		(2,1) empty?		|							|
+*										emp_row_index = 2
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*
+*	------------------------------------------------------------------------------------------------------------------------------
+*
+*	i=2. 1st iteration:	product_row = 1 * value of (2,0), product_column = 1 * value of (0,2)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|		(0,2) empty?		|
+*																	emp_row_index = 2
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*																	
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|		(2,0) empty?		|							|							|
+*			emp_col_index = 0							
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*
+*
+*	i=2. 2ns iteration:	product_row = product_row * value of (2,1), product_column = product_column * value of (1,2)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*																	
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|		(1,2) empty?		|
+*																	emp_row_index = 1
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|		(2,1) empty?		|							|
+*										emp_col_index = 1
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*
+*	i=2. 3rd iteration:	product_row = product_row * value of (2,2), product_column = product_column * value of (2,2)
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*																	
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|		(2,2) empty?		|
+*																	(2,2) empty?
+*																	emp_row_index = 2
+*																	emp_col_index = 2
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*
+*/
 int getWinningPos(int p){
 	int i;
 	int win_value;
 	int product_row = 1, product_column = 1, product_diag1 = 1, product_diag2 = 1, j;
 
 	if (p == 1)
-		win_value = X_VALUE * X_VALUE * EMPTY;
+		win_value = X_VALUE * X_VALUE * EMPTY;	//(3*3*2 = 18)
 	else
-		win_value = O_VALUE * O_VALUE * EMPTY;
+		win_value = O_VALUE * O_VALUE * EMPTY;	//(5*5*2 = 50)
 	int emp_diag_index1, emp_diag_index2;
 	//row & column && diagonal check
 	for (i = 0; i < GAME_SIZE; i++){
@@ -233,6 +365,56 @@ int getWinningPos(int p){
 		if (product_column == win_value)
 			return convert_row_col_to_pos(emp_row_index, i);
 
+		/*check diagonal*/
+		/*
+		*	1st iteration
+		*	i=0, product_diag1 = product_diag1 * value of (0,0), product_diag2 = product_diag2 * value of (0,2)
+		*	
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|		(0,0) empty?		|							|		(0,2) empty?		|
+		*			emp_diag_index1 = 0										emp_diag_index2 = 0
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|							|							|							|
+		*																	
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|							|							|							|
+		*																
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*
+		*
+		*	2nd iteration
+		*	i=1, product_diag1 = product_diag1 * value of (1,1), product_diag2 = product_diag2 * value of (1,1)
+		*
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|							|							|							|
+		*												
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|							|		(0,0) empty?		|							|
+		*										(0,0) empty?
+		*										emp_diag_index2 = 0
+		*										emp_diag_index1 = 0	
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|							|							|							|
+		*
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*
+		*
+		*
+		*	3rd iteration
+		*	i=2, product_diag1 = product_diag1 * value of (2,2), product_diag2 = product_diag2 * value of (2,0)
+		*
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|							|							|							|
+		*
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|							|							|							|
+		*										
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*	|		(2,2) empty?		|							|		(2,0) empty?		|
+		*			emp_diag_index1 = 2										emp_diag_index2 = 2
+		*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		*
+		*/
 		product_diag1 *= board[i][i];
 		if (board[i][i] == EMPTY)
 			emp_diag_index1 = i;
@@ -248,6 +430,18 @@ int getWinningPos(int p){
 	return FALSE;
 }
 
+/*
+*	when the function is called, it loops through the cells indicated below:
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|	(0,1) empty? return 2	|							|	
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+*	|	(1,0) empty? return 4	|	(1,1) empty? return 5	|	(1,2) empty? return 6	|	
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+*	|							|	(2,1) empty? return 8	|							|	
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+*
+*	returns the position of the cell if the program checks if the cell is empty
+*/
 int make2()
 {
 	int i;
@@ -260,6 +454,20 @@ int make2()
 	return 0;
 }
 
+
+
+/*
+*	when the function is called, it loops through the cells indicated below:
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|	(0,0) empty? return 1	|							|	(0,2) empty? return 3	|
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|							|							|							|
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*	|	(2,0) empty? return 7	|							|	(2,2) empty? return 9	|
+*	_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+*
+*	returns the position of the cell if the program checks if the cell is empty
+*/
 int make4()
 {
 	int i = 0;

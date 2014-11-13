@@ -54,7 +54,10 @@ void addNewPlayer(){
 	}
 	else{
 		printf("Enter your name: ");
-		scanf("%s", name);	//gets player's name as string
+		//scanf("%s", name);	//gets player's name as string
+		fflush(stdin);
+		fgets(name, strlen(name), stdin);
+		//printf("%s", name);
 		generateId(name, id); //prints unique ID
 
 		/*insert your own code here (2)
@@ -86,6 +89,16 @@ void addNewPlayer(){
 
 void generateId(char *name, char *id){
 	/*insert your own code here (3)*/
+
+	int temp = strlen(name) - 2;
+
+	for (int i = 0; i < strlen(name); i++){
+		if (name[i] == ' '){
+			temp = i - 1;
+			break;
+		}
+	}
+
 	
 	strncpy(id, name, 3); //get first 3 letter of name and insert into id
 	id[3] = '\0';	//add null termintor to id[3]
@@ -93,7 +106,7 @@ void generateId(char *name, char *id){
 	char *twoInt = getRandom2DigitNumber();	//generate 2 digit number and add assign to pointer
 	strcat(id, twoInt);	//concatenate the 3 letters and twoInt 
 
-	char lastLetter = name[strlen(name)-1];	//get the value of the last letter of name
+	char lastLetter = name[temp];	//get the value of the last letter of name
 	char lastLetterTemp[2];	//lastLetterTemp array of 2, index 1 for last letter of name and index 2 for null terminator
 	sprintf(lastLetterTemp, "%c", lastLetter);	//convert lastLetter into lastLetterTemp
 	strcat(id, lastLetterTemp);	//concatenate id with lastLetterTemp
@@ -147,7 +160,7 @@ void printPlayerList(){
 	if (numOfPlayers > 0){
 			for (int i = 0; i < numOfPlayers; i++){
 				printf("%-15s", playerList[i].id);
-				printf("%-22s", playerList[i].name);
+				printf("%s", playerList[i].name);
 				printf("%d\n", playerList[i].numOfWins);
 			}
 	}	
