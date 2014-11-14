@@ -57,6 +57,14 @@ void addNewPlayer(){
 		//scanf("%s", name);	//gets player's name as string, however any string after \w, \n, \t, etc in the stream, will be removed
 		fflush(stdin);	//flushes out the buffer
 		fgets(name, strlen(name), stdin);	//gets player's name as string, however any string after \w, \n, \t, etc in the stream, will be stored
+		
+		/*replace \n with \0*/
+		for (int i = 0; i < strlen(name); i++){
+			if (name[i] == '\n'){
+				name[i] = '\0';
+			}
+		}
+
 		generateId(name, id); //prints unique ID
 
 		/*insert your own code here (2)
@@ -79,6 +87,12 @@ void addNewPlayer(){
 			playerList[numOfPlayers].numOfWins = 0;	//add 0 into playerList as player's numOfWins
 			numOfPlayers++;	//increment numOfPlayers by 1
 		}
+		else{
+			printf("PlayerID not unique");
+			_getch();
+			playerMenu();
+			return;
+		}
 
 	}
 
@@ -89,7 +103,7 @@ void addNewPlayer(){
 void generateId(char *name, char *id){
 	/*insert your own code here (3)*/
 
-	int temp = strlen(name) - 2;	//length of name - 2
+	int temp = strlen(name) - 1;	//length of name - 1
 
 	for (int i = 0; i < strlen(name); i++){
 		if (name[i] == ' '){	//checks if index of name has a blank space
@@ -159,7 +173,7 @@ void printPlayerList(){
 	if (numOfPlayers > 0){
 			for (int i = 0; i < numOfPlayers; i++){
 				printf("%-15s", playerList[i].id);
-				printf("%s", playerList[i].name);
+				printf("%-22s", playerList[i].name);
 				printf("%d\n", playerList[i].numOfWins);
 			}
 	}	
