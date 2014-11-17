@@ -55,10 +55,10 @@ void addNewPlayer(){
 	else{
 		printf("Enter your name: ");
 		//scanf("%s", name);	//gets player's name as string, however any string after \w, \n, \t, etc in the stream, will be removed
-		fflush(stdin);	//flushes out the buffer
+		fflush(stdin);	//flushes out the buffer stream
 		fgets(name, strlen(name), stdin);	//gets player's name as string, however any string after \w, \n, \t, etc in the stream, will be stored
 		
-		/*replace \n with \0*/
+		/* replace \n with \0 */
 		for (int i = 0; i < strlen(name); i++){
 			if (name[i] == '\n'){
 				name[i] = '\0';
@@ -103,8 +103,9 @@ void addNewPlayer(){
 void generateId(char *name, char *id){
 	/*insert your own code here (3)*/
 
-	int temp = strlen(name) - 1;	//length of name - 1
+	int temp = strlen(name) - 1;	//length of name - 1. example, 'leonard', returns 'd'
 
+	/* example, 'leonard yeo', returns 'd' */
 	for (int i = 0; i < strlen(name); i++){
 		if (name[i] == ' '){	//checks if index of name has a blank space
 			temp = i - 1;	//temp = index of name - 1
@@ -169,11 +170,12 @@ void updateNumberOfWins(int index){
 /*function displays all player's id, player's name, player's numOfWins*/
 void printPlayerList(){
 	/*insert your code here (5)*/
-	printf("%-15s %-22s %-5s\n", "PlayerID", "Name", "NumberOWins");
+	printf("%s\t %s\t %s\t\n", "PlayerID", "Name", "NumberOWins");
+	//printf("\t");	
 	if (numOfPlayers > 0){
 			for (int i = 0; i < numOfPlayers; i++){
-				printf("%-15s", playerList[i].id);
-				printf("%-22s", playerList[i].name);
+				printf("%s\t\t", playerList[i].id);
+				printf("%s\t", playerList[i].name);
 				printf("%d\n", playerList[i].numOfWins);
 			}
 	}	
